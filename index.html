@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Mobile Calculator</title>
+    <title>Калькулятор с правильным повторением операций</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <style>
         * {
@@ -13,35 +13,36 @@
         }
 
         body {
-            background-color: #000;
+            background-color: #000000;
             height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            font-family: Arial, sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
 
         .calculator {
             width: 100%;
-            max-width: 500px;
-            padding: 10px;
-            background-color: #1a1a1a;
-            border-radius: 15px;
+            max-width: 400px;
+            padding: 15px;
+            background-color: #333;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.2);
         }
 
         .display-container {
             margin-bottom: 15px;
             padding: 15px;
-            background-color: #000;
-            border-radius: 10px;
+            background-color: #444;
+            border-radius: 8px;
         }
 
         #history {
-            font-size: 1.2rem;
-            color: #666;
+            font-size: 16px;
+            color: #888;
             text-align: right;
-            min-height: 1.5rem;
+            min-height: 20px;
             margin-bottom: 5px;
         }
 
@@ -50,7 +51,7 @@
             border: none;
             background: transparent;
             color: #fff;
-            font-size: 2.5rem;
+            font-size: 36px;
             text-align: right;
             padding: 5px 0;
         }
@@ -63,39 +64,43 @@
 
         button {
             padding: 20px;
-            font-size: 1.5rem;
+            font-size: 20px;
             border: none;
-            border-radius: 10px;
-            background-color: #333;
+            border-radius: 8px;
+            background-color: #555;
             color: #fff;
             cursor: pointer;
-            transition: background-color 0.2s;
-            touch-action: manipulation;
+            transition: all 0.2s;
         }
 
         button:active {
-            background-color: #444;
+            transform: scale(0.95);
         }
 
         .operator {
-            background-color: #4CAF50;
+            background-color: #FF9500;
         }
 
         .operator.active {
-            background-color: #45a049;
-            box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+            background-color: #000 !important;
+            color: #fff !important;
+            box-shadow: 0 0 8px rgba(0,0,0,0.3);
         }
 
         .equals {
-            background-color: #2196F3;
+            background-color: #34C759;
+        }
+
+        .special {
+            background-color: #444;
         }
 
         .error-message {
             color: #ff4444;
-            font-size: 0.9rem;
+            font-size: 12px;
             text-align: right;
-            height: 1rem;
-            margin-top: 5px;
+            height: 14px;
+            margin-top: 4px;
         }
 
         @media (max-width: 480px) {
@@ -103,16 +108,15 @@
                 border-radius: 0;
                 height: 100vh;
                 max-width: none;
-                padding: 10px 5px;
             }
 
             button {
-                padding: 15px;
-                font-size: 1.3rem;
+                padding: 18px;
+                font-size: 18px;
             }
 
             #display {
-                font-size: 2rem;
+                font-size: 32px;
             }
         }
     </style>
@@ -121,29 +125,29 @@
     <div class="calculator">
         <div class="display-container">
             <div id="history"></div>
-            <input type="text" id="display" readonly>
+            <input type="text" id="display" readonly value="0">
             <div id="error" class="error-message"></div>
         </div>
         <div class="buttons">
-            <button onclick="clearDisplay()">AC</button>
-            <button onclick="deleteLast()">DEL</button>
-            <button onclick="addPercent()">%</button>
-            <button class="operator" ontouchstart="handleOperatorTouch('/')">/</button>
-            <button ontouchstart="appendNumber('7')">7</button>
-            <button ontouchstart="appendNumber('8')">8</button>
-            <button ontouchstart="appendNumber('9')">9</button>
-            <button class="operator" ontouchstart="handleOperatorTouch('*')">×</button>
-            <button ontouchstart="appendNumber('4')">4</button>
-            <button ontouchstart="appendNumber('5')">5</button>
-            <button ontouchstart="appendNumber('6')">6</button>
-            <button class="operator" ontouchstart="handleOperatorTouch('-')">-</button>
-            <button ontouchstart="appendNumber('1')">1</button>
-            <button ontouchstart="appendNumber('2')">2</button>
-            <button ontouchstart="appendNumber('3')">3</button>
-            <button class="operator" ontouchstart="handleOperatorTouch('+')">+</button>
-            <button ontouchstart="appendNumber('0')" style="grid-column: span 2">0</button>
-            <button ontouchstart="appendNumber('.')">.</button>
-            <button class="equals" ontouchstart="calculate()">=</button>
+            <button class="special" onclick="clearDisplay()">AC</button>
+            <button class="special" onclick="deleteLast()">⌫</button>
+            <button class="special" onclick="addPercent()">%</button>
+            <button class="operator" onclick="handleOperator('/')">/</button>
+            <button onclick="appendNumber('7')">7</button>
+            <button onclick="appendNumber('8')">8</button>
+            <button onclick="appendNumber('9')">9</button>
+            <button class="operator" onclick="handleOperator('*')">×</button>
+            <button onclick="appendNumber('4')">4</button>
+            <button onclick="appendNumber('5')">5</button>
+            <button onclick="appendNumber('6')">6</button>
+            <button class="operator" onclick="handleOperator('-')">-</button>
+            <button onclick="appendNumber('1')">1</button>
+            <button onclick="appendNumber('2')">2</button>
+            <button onclick="appendNumber('3')">3</button>
+            <button class="operator" onclick="handleOperator('+')">+</button>
+            <button onclick="appendNumber('0')" style="grid-column: span 2">0</button>
+            <button onclick="appendNumber('.')">.</button>
+            <button class="equals" onclick="calculate()">=</button>
         </div>
     </div>
 
@@ -151,35 +155,24 @@
         let currentNumber = '';
         let previousNumber = '';
         let operation = null;
-        let lastTouchTime = 0;
-        let lastOperator = null;
+        let repeatOperation = false;
+        let lastClickTime = 0;
+        let storedValue = null;
 
-        // Обработчик событий клавиатуры
-        document.addEventListener('keydown', handleKeyboardInput);
+        document.addEventListener('keydown', handleKeyboard);
 
         function showError(message) {
-            const errorElement = document.getElementById('error');
-            errorElement.textContent = message;
-            setTimeout(() => errorElement.textContent = '', 2000);
+            const error = document.getElementById('error');
+            error.textContent = message;
+            setTimeout(() => error.textContent = '', 2000);
         }
 
-        function handleKeyboardInput(e) {
-            if (e.key >= '0' && e.key <= '9' || e.key === '.') {
-                appendNumber(e.key);
-            }
-            else if (['+', '-', '*', '/'].includes(e.key)) {
-                handleOperatorTouch(e.key);
-            }
-            else if (e.key === 'Enter') {
-                e.preventDefault();
-                calculate();
-            }
-            else if (e.key === 'Backspace') {
-                deleteLast();
-            }
-            else if (e.key === 'Escape') {
-                clearDisplay();
-            }
+        function handleKeyboard(e) {
+            if (e.key >= '0' && e.key <= '9' || e.key === '.') appendNumber(e.key);
+            else if (['+', '-', '*', '/'].includes(e.key)) handleOperator(e.key);
+            else if (e.key === 'Enter') calculate();
+            else if (e.key === 'Backspace') deleteLast();
+            else if (e.key === 'Escape') clearDisplay();
         }
 
         function updateDisplay() {
@@ -190,35 +183,29 @@
 
         function appendNumber(num) {
             if (num === '.' && currentNumber.includes('.')) {
-                showError('Decimal point already exists');
+                showError('Уже добавлена точка');
                 return;
             }
             currentNumber += num;
             updateDisplay();
         }
 
-        function handleOperatorTouch(op) {
+        function handleOperator(op) {
             const now = Date.now();
-            const isDoubleTap = (now - lastTouchTime) < 300 && op === lastOperator;
+            const isDoubleClick = (now - lastClickTime < 300) && (op === operation);
             
-            lastTouchTime = now;
-            lastOperator = op;
+            lastClickTime = now;
 
             if (currentNumber === '' && previousNumber === '') {
-                showError('Enter a number first');
+                showError('Введите число');
                 return;
             }
 
-            if (isDoubleTap) {
-                operation = op;
+            if (isDoubleClick) {
+                repeatOperation = true;
+                storedValue = previousNumber;
                 document.querySelectorAll('.operator').forEach(btn => btn.classList.remove('active'));
                 event.target.classList.add('active');
-                if (currentNumber === '') {
-                    currentNumber = previousNumber;
-                }
-                calculate();
-                previousNumber = currentNumber;
-                currentNumber = '';
                 return;
             }
 
@@ -226,16 +213,24 @@
                 previousNumber = currentNumber;
                 currentNumber = '';
             }
-            
+
             operation = op;
+            repeatOperation = false;
+            storedValue = null;
             updateDisplay();
         }
 
         function calculate() {
             if (!operation || previousNumber === '') return;
-            
+
             if (currentNumber === '') {
-                currentNumber = previousNumber;
+                if (repeatOperation && storedValue !== null) {
+                    currentNumber = previousNumber;
+                    previousNumber = storedValue;
+                } else {
+                    showError('Введите число');
+                    return;
+                }
             }
 
             const prev = parseFloat(previousNumber);
@@ -250,15 +245,21 @@
             }
 
             if (isNaN(result)) {
-                showError('Invalid operation');
+                showError('Ошибка вычисления');
                 clearDisplay();
                 return;
             }
 
-            currentNumber = result.toString();
-            previousNumber = '';
-            operation = null;
-            document.querySelectorAll('.operator').forEach(btn => btn.classList.remove('active'));
+            // Сохраняем результат для следующей операции
+            storedValue = repeatOperation ? storedValue : prev;
+            previousNumber = result.toString();
+            currentNumber = '';
+
+            if (!repeatOperation) {
+                operation = null;
+                document.querySelectorAll('.operator').forEach(btn => btn.classList.remove('active'));
+            }
+            
             updateDisplay();
         }
 
@@ -273,6 +274,8 @@
             currentNumber = '';
             previousNumber = '';
             operation = null;
+            repeatOperation = false;
+            storedValue = null;
             document.querySelectorAll('.operator').forEach(btn => btn.classList.remove('active'));
             updateDisplay();
         }
